@@ -2,6 +2,8 @@ package ru.haulmont.daoclasses;
 
 import ru.haulmont.entities.*;
 
+import java.sql.SQLException;
+
 /**
  * Created by nikita on 11/29/14.
  */
@@ -12,7 +14,7 @@ public interface DBStudentsDAO {
      * @param userName  строка содержащая имя пользователя;
      * @param password  строка содержащая пароль пользователя.
      */
-    public void loadDatabase(String url, String userName, String password);
+    public void loadDatabase(String url, String userName, String password) throws SQLException;
 
     /**
      * Добавление новой группы в таблицу "Groups".
