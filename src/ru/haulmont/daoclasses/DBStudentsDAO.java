@@ -8,6 +8,13 @@ import java.sql.SQLException;
  * Created by nikita on 11/29/14.
  */
 public interface DBStudentsDAO {
+    public static final String ADD_GROUP_QUERY = "INSERT INTO groups (number, faculty) VALUES (?, ?)";
+    public static final String ADD_STUDENT_QUERY = "INSERT INTO students (name, surname, patronymic, birthday, group_id) VALUES (?, ?, ?, ?, ?)";
+    public static final String EDIT_GROUP_QUERY = "UPDATE groups SET number = ?, faculty = ? WHERE id = ?";
+    public static final String EDIT_STUDENT_QUERY = "UPDATE students SET name = ?, surname = ?, patronymic = ?, birthday = ?, group_id = ? WHERE id = ?";
+    public static final String REMOVE_GROUP_QUERY = "DELETE FROM groups WHERE id = ?";
+    public static final String REMOVE_STUDENT_QUERY = "DELETE FROM students WHERE id = ?";
+
     /**
      * Метод загружает базу данных по заданным параметрам.
      * @param url  строка содержащая драйвер БД, имя БД и расположение;
@@ -52,4 +59,5 @@ public interface DBStudentsDAO {
      */
     public void deleteStudent(Student removedStudent);
 
+    public void closeConnection();
 }

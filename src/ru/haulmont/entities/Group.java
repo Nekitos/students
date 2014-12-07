@@ -5,7 +5,7 @@ package ru.haulmont.entities;
  */
 public class Group {
     private long groupID;
-    private long groupNumber;
+    private int groupNumber;
     private String faculty;
 
     public Group() {
@@ -20,11 +20,11 @@ public class Group {
         this.groupID = groupID;
     }
 
-    public long getGroupNumber() {
+    public int getGroupNumber() {
         return groupNumber;
     }
 
-    public void setGroupNumber(long groupNumber) {
+    public void setGroupNumber(int groupNumber) {
         this.groupNumber = groupNumber;
     }
 
