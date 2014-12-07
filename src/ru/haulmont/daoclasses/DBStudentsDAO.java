@@ -3,6 +3,7 @@ package ru.haulmont.daoclasses;
 import ru.haulmont.entities.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by nikita on 11/29/14.
@@ -14,6 +15,8 @@ public interface DBStudentsDAO {
     public static final String EDIT_STUDENT_QUERY = "UPDATE students SET name = ?, surname = ?, patronymic = ?, birthday = ?, group_id = ? WHERE id = ?";
     public static final String REMOVE_GROUP_QUERY = "DELETE FROM groups WHERE id = ?";
     public static final String REMOVE_STUDENT_QUERY = "DELETE FROM students WHERE id = ?";
+    public static final String SELECT_ALL_STUDENTS_QUERY = "SELECT * FROM students";
+    public static final String SELECT_ALL_GROUPS_QUERY = "SELECT * FROM groups";
 
     /**
      * Метод загружает базу данных по заданным параметрам.
@@ -59,5 +62,20 @@ public interface DBStudentsDAO {
      */
     public void deleteStudent(Student removedStudent);
 
+    /**
+     * Метод возвращает список всех студентов хранящихся в БД.
+     * @return список студентов
+     */
+    public List<Student> getAllStudents();
+
+    /**
+     * Метод возвращает список всех групп хранящихся в БД.
+     * @return список групп
+     */
+    public List<Group> getAllGroups();
+
+    /**
+     * Закрытие соединения с Базой Данных.
+     */
     public void closeConnection();
 }
