@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by nikita on 11/29/14.
  */
-public class DerbyDBStudents implements DBStudentsDAO {
+public class DerbyDataSource implements DataSource {
     private Connection conn;
     private PreparedStatement preparedStatement;
     private Savepoint savepoint;
@@ -19,19 +19,23 @@ public class DerbyDBStudents implements DBStudentsDAO {
     private List<Student> students;
     private List<Group> groups;
 
-    public DerbyDBStudents() {
+    public DerbyDataSource() {
         students = new ArrayList<Student>();
         groups = new ArrayList<Group>();
     }
 
     @Override
-    public void loadDatabase(String url, String userName, String password) throws SQLException {
-        conn = DriverManager.getConnection(url);
-        conn.setAutoCommit(false);
-        groupsUpdate = false;
-        studentsUpdate = false;
-        updateGroupsList();
-        updateStudentsList();
+    public void loadDatabase(String url, String userName, String password) {
+        try {
+            conn = DriverManager.getConnection(url);
+            conn.setAutoCommit(false);
+            groupsUpdate = false;
+            studentsUpdate = false;
+            updateGroupsList();
+            updateStudentsList();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -217,6 +221,38 @@ public class DerbyDBStudents implements DBStudentsDAO {
         if (groupsUpdate)
             updateGroupsList();
         return groups;
+    }
+
+    @Override
+    public List<Student> filter(String surname, int groupNumber) {
+        List<Student> result = new ArrayList<Student>();
+
+        try {
+            preparedStatement = conn.prepareStatement(FILTER_STUDENTS_BY_NAME_AND_GROUP_NUMBER);
+            preparedStatement.setString(1, surname);
+            preparedStatement.setInt(2, groupNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Student student = new Student();
+                student.setStudentID(resultSet.getLong(1));
+                student.setName(resultSet.getString(2));
+                student.setSurname(resultSet.getString(3));
+                student.setPatronymic(resultSet.getString(4));
+                student.setBirthday(resultSet.getDate(5));
+                student.setGroupID(resultSet.getLong(6));
+                result.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by nikita on 11/29/14.
  */
-public interface DBStudentsDAO {
+public interface DataSource {
     public static final String ADD_GROUP_QUERY = "INSERT INTO groups (number, faculty) VALUES (?, ?)";
     public static final String ADD_STUDENT_QUERY = "INSERT INTO students (name, surname, patronymic, birthday, group_id) VALUES (?, ?, ?, ?, ?)";
     public static final String EDIT_GROUP_QUERY = "UPDATE groups SET number = ?, faculty = ? WHERE id = ?";
@@ -17,6 +17,7 @@ public interface DBStudentsDAO {
     public static final String REMOVE_STUDENT_QUERY = "DELETE FROM students WHERE id = ?";
     public static final String SELECT_ALL_STUDENTS_QUERY = "SELECT * FROM students";
     public static final String SELECT_ALL_GROUPS_QUERY = "SELECT * FROM groups";
+    public static final String FILTER_STUDENTS_BY_NAME_AND_GROUP_NUMBER = "SELECT s.* FROM students s INNER JOIN groups g ON s.group_id = g.id WHERE s.surname = ? AND g.number = ?";
 
     /**
      * Метод загружает базу данных по заданным параметрам.
@@ -24,7 +25,7 @@ public interface DBStudentsDAO {
      * @param userName  строка содержащая имя пользователя;
      * @param password  строка содержащая пароль пользователя.
      */
-    public void loadDatabase(String url, String userName, String password) throws SQLException;
+    public void loadDatabase(String url, String userName, String password);
 
     /**
      * Добавление новой группы в таблицу "Groups".
@@ -73,6 +74,14 @@ public interface DBStudentsDAO {
      * @return список групп
      */
     public List<Group> getAllGroups();
+
+    /**
+     * Метод фильтрует студентов по заданным фамилии и номеру группу.
+     * @param surname фамилия студента
+     * @param groupNumber группа
+     * @return возвращает список студентов отфильтрованных по фамилии и номеру группы
+     */
+    public List<Student> filter(String surname, int groupNumber);
 
     /**
      * Закрытие соединения с Базой Данных.
