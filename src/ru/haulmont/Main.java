@@ -1,5 +1,7 @@
 package ru.haulmont;
 
+import ru.haulmont.daoclasses.DataSource;
+import ru.haulmont.daoclasses.DerbyDataSource;
 import ru.haulmont.gui.MainWindow;
 
 import javax.swing.*;
@@ -12,7 +14,9 @@ public class Main {
         EventQueue.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = new MainWindow();
+                DataSource data = new DerbyDataSource();
+                data.loadDatabase("jdbc:derby:studdb;", null, null);
+                JFrame frame = new MainWindow(data);
                 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.setVisible(true);
             }

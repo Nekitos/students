@@ -35,4 +35,9 @@ public class Group {
     public void setFaculty(String faculty) {
         this.faculty = faculty;
     }
+
+    @Override
+    public String toString() {
+        return groupNumber + " - " + faculty;
+    }
 }

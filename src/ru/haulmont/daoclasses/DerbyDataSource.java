@@ -263,6 +263,7 @@ public class DerbyDataSource implements DataSource {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("Connection successfully closed.");
     }
 
     private void updateStudentsList() {

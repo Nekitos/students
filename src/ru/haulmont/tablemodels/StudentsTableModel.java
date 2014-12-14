@@ -43,7 +43,27 @@ public class StudentsTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return studentsList.get(rowIndex + 1);
+        Object value = null;
+        Student temp = studentsList.get(rowIndex);
+
+        switch (columnIndex) {
+            case 0:
+                value = temp.getName();
+                break;
+            case 1:
+                value = temp.getSurname();
+                break;
+            case 2:
+                value = temp.getPatronymic();
+                break;
+            case 3:
+                value = temp.getBirthday();
+                break;
+            case 4:
+                value = temp.getGroupID();
+        }
+
+        return value;
     }
 
     @Override

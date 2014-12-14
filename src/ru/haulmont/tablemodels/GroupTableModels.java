@@ -40,7 +40,7 @@ public class GroupTableModels extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return groupsList.get(columnIndex + 1);
+        return groupsList.get(columnIndex);
     }
 
     @Override
