@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 public class MainWindow extends JFrame {
     private JTabbedPane tabsPanel;
     private StudentsPanel studentsPanel;
+    private GroupsPanel groupsPanel;
     private final DataSource data;
 
     public MainWindow(DataSource data) {
@@ -24,10 +25,12 @@ public class MainWindow extends JFrame {
                 super.windowClosing(e);
             }
         });
+        setTitle("Система управления данных студентов");
         studentsPanel = new StudentsPanel(data);
+        groupsPanel = new GroupsPanel(data);
         tabsPanel = new JTabbedPane();
         tabsPanel.addTab("Students list", studentsPanel);
-        tabsPanel.addTab("Group list", new JPanel());
+        tabsPanel.addTab("Group list", groupsPanel);
         add(tabsPanel);
         setPreferredSize(new Dimension(500, 500));
         pack();

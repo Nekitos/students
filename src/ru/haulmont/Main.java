@@ -14,6 +14,7 @@ public class Main {
         EventQueue.invokeAndWait(new Runnable() {
             @Override
             public void run() {
+                //Перенести создание экземпляра БД в класс MainWindow
                 DataSource data = new DerbyDataSource();
                 data.loadDatabase("jdbc:derby:studdb;", null, null);
                 JFrame frame = new MainWindow(data);

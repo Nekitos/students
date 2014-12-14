@@ -9,16 +9,16 @@ import java.util.List;
 /**
  * Created by nikita on 12/13/14.
  */
-public class GroupTableModels extends AbstractTableModel {
+public class GroupsTableModel extends AbstractTableModel {
     private static final String columnNames[] = {
-            "Group number",
-            "Faculty"
+            "Номер группы",
+            "Факультет"
     };
 
     private DataSource data;
     private List<Group> groupsList;
 
-    public GroupTableModels(DataSource dataSource) {
+    public GroupsTableModel(DataSource dataSource) {
         data = dataSource;
         groupsList = data.getAllGroups();
     }
@@ -40,7 +40,19 @@ public class GroupTableModels extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return groupsList.get(columnIndex);
+        Object value = null;
+        Group temp = groupsList.get(rowIndex);
+
+        switch (columnIndex) {
+            case 0:
+                value = temp.getGroupNumber();
+                break;
+            case 1:
+                value = temp.getFaculty();
+                break;
+        }
+
+        return value;
     }
 
     @Override

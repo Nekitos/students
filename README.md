@@ -1,4 +1,4 @@
 Students
 ========
 
-Simple DataBase that contain students.
+A simple system for database management students.

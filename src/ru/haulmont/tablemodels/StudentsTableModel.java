@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class StudentsTableModel extends AbstractTableModel {
     private static final String columnNames[] = {
-            "Name",
-            "Surname",
-            "Patronymic",
-            "Birthday",
-            "Group number"
+            "Имя",
+            "Фамилия",
+            "Отчество",
+            "Дата рождения",
+            "Номер группы"
     };
 
     private List<Student> studentsList;
