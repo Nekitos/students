@@ -29,8 +29,8 @@ public class MainWindow extends JFrame {
         studentsPanel = new StudentsPanel(data);
         groupsPanel = new GroupsPanel(data);
         tabsPanel = new JTabbedPane();
-        tabsPanel.addTab("Students list", studentsPanel);
-        tabsPanel.addTab("Group list", groupsPanel);
+        tabsPanel.addTab("Студенты", studentsPanel);
+        tabsPanel.addTab("Группы", groupsPanel);
         add(tabsPanel);
         setPreferredSize(new Dimension(500, 500));
         pack();

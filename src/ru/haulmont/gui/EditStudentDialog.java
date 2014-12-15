@@ -1,5 +1,7 @@
 package ru.haulmont.gui;
 
+import ru.haulmont.entities.Student;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,6 +9,10 @@ import java.awt.*;
  * Created by nikita on 12/14/14.
  */
 public class EditStudentDialog extends JDialog {
+    public static final int BTN_OK = 0;
+    public static final int BTN_CANCEL = 1;
+    public static final int CLOSE_WINDOW = 2;
+
     private JLabel lblName;
     private JLabel lblSurname;
     private JLabel lblPatronymic;
@@ -20,6 +26,8 @@ public class EditStudentDialog extends JDialog {
     private GroupLayout layout;
     private JButton btnOK;
     private JButton btnCancel;
+    private int choosedButton;
+    private Student student;
 
     public EditStudentDialog(JFrame owner, String title) {
         super(owner, title, true);
@@ -34,7 +42,7 @@ public class EditStudentDialog extends JDialog {
         ftfBirthday = new JFormattedTextField();
         cbGroups = new JComboBox<String>();
         btnOK = new JButton("Ок");
-        btnCancel = new JButton("Отменить");
+        btnCancel = new JButton("Отмена");
         layout = new GroupLayout(getContentPane());
 
         setPreferredSize(new Dimension(500, 300));
