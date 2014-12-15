@@ -2,15 +2,21 @@ package ru.haulmont.gui;
 
 import ru.haulmont.controllers.StudentsController;
 import ru.haulmont.daoclasses.DataSource;
+import ru.haulmont.entities.Student;
 import ru.haulmont.tablemodels.StudentsTableModel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by nikita on 12/13/14.
  */
 public class StudentsPanel extends JPanel {
+    private static final String QUESTION_MESSAGE_STRING = "Вы действительно хотите удалить выбранного студента?";
+    private static final String QUESTION_MESSAGE_TITLE = "Внимание!";
+
     private JButton btnAdd;
     private JButton btnEdit;
     private JButton btnRemove;
@@ -27,10 +33,12 @@ public class StudentsPanel extends JPanel {
     private GroupLayout filterLayout;
     private TitledBorder filterGroup;
     private JPanel filterPanel;
+    private EditStudentDialog editDialog;
 
-    public StudentsPanel(DataSource data) {
+    public StudentsPanel(DataSource data, JFrame owner) {
         tableModel = new StudentsTableModel(data);
         studentsListTable = new JTable();
+        studentsListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tablePane = new JScrollPane(studentsListTable);
         studentsController = new StudentsController(tableModel, studentsListTable);
         btnAdd = new JButton("Добавить");
@@ -45,8 +53,45 @@ public class StudentsPanel extends JPanel {
         layout = new GroupLayout(this);
         filterLayout = new GroupLayout(filterPanel);
         filterGroup = new TitledBorder("Фильтр");
+        editDialog = new EditStudentDialog(owner);
 
         studentsController.updateView();
+
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (editDialog.showAddingDialog("Добавление студента") == editDialog.BTN_OK) {
+                    Student temp = editDialog.getAddingStudent();
+                    System.out.println(temp.getStudentID());
+                    System.out.println(temp.getName());
+                    System.out.println(temp.getSurname());
+                    System.out.println(temp.getPatronymic());
+                    System.out.println(temp.getBirthday());
+                    System.out.println(temp.getGroupID());
+                }
+            }
+        });
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = studentsListTable.getSelectedRow();
+                if (selectedRow == -1)
+                    return;
+
+                int result = JOptionPane.showConfirmDialog( StudentsPanel.this,
+                                                            QUESTION_MESSAGE_TITLE,
+                                                            QUESTION_MESSAGE_STRING,
+                                                            JOptionPane.OK_CANCEL_OPTION,
+                                                            JOptionPane.QUESTION_MESSAGE);
+                if(result == JOptionPane.OK_OPTION) {
+                    Student deletedStudent = new Student();
+                    long ID = (Long)studentsListTable.getValueAt(selectedRow, 0);
+                    deletedStudent.setStudentID(ID);
+                    studentsController.deleteStudent(deletedStudent);
+                    studentsController.updateView();
+                }
+            }
+        });
 
         filterPanel.setBorder(filterGroup);
         filterPanel.setLayout(filterLayout);

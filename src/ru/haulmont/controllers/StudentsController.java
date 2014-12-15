@@ -1,5 +1,6 @@
 package ru.haulmont.controllers;
 
+import ru.haulmont.entities.Student;
 import ru.haulmont.tablemodels.StudentsTableModel;
 
 import javax.swing.*;
@@ -15,10 +16,15 @@ public class StudentsController {
     public StudentsController(TableModel studentsModel, JTable view) {
         studentsTableModel = studentsModel;
         studentsTable = view;
+        studentsTable.setModel(studentsTableModel);
     }
 
     public void updateView() {
         ((StudentsTableModel)studentsTableModel).updateModel();
-        studentsTable.setModel(studentsTableModel);
+        studentsTable.revalidate();
+    }
+
+    public void deleteStudent(Student deletedStudent) {
+        ((StudentsTableModel)studentsTableModel).deleteStudent(deletedStudent);
     }
 }

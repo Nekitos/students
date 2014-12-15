@@ -26,8 +26,8 @@ public class MainWindow extends JFrame {
             }
         });
         setTitle("Система управления данных студентов");
-        studentsPanel = new StudentsPanel(data);
-        groupsPanel = new GroupsPanel(data);
+        studentsPanel = new StudentsPanel(data, this);
+        groupsPanel = new GroupsPanel(data, this);
         tabsPanel = new JTabbedPane();
         tabsPanel.addTab("Студенты", studentsPanel);
         tabsPanel.addTab("Группы", groupsPanel);

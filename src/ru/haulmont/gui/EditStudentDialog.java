@@ -4,6 +4,10 @@ import ru.haulmont.entities.Student;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by nikita on 12/14/14.
@@ -11,7 +15,7 @@ import java.awt.*;
 public class EditStudentDialog extends JDialog {
     public static final int BTN_OK = 0;
     public static final int BTN_CANCEL = 1;
-    public static final int CLOSE_WINDOW = 2;
+    public static final int BTN_CLOSE = 3;
 
     private JLabel lblName;
     private JLabel lblSurname;
@@ -28,9 +32,13 @@ public class EditStudentDialog extends JDialog {
     private JButton btnCancel;
     private int choosedButton;
     private Student student;
+    private ActionListener editOkListener;
+    private ActionListener editCancelListener;
+    private ActionListener addOkListener;
+    private ActionListener addCancelListener;
 
-    public EditStudentDialog(JFrame owner, String title) {
-        super(owner, title, true);
+    public EditStudentDialog(JFrame owner) {
+        super(owner, true);
         lblName = new JLabel("Имя");
         lblSurname = new JLabel("Фамилия");
         lblPatronymic = new JLabel("Отчество");
@@ -39,11 +47,52 @@ public class EditStudentDialog extends JDialog {
         ftfName = new JFormattedTextField();
         ftfSurname = new JFormattedTextField();
         ftfPatronymic = new JFormattedTextField();
-        ftfBirthday = new JFormattedTextField();
+        ftfBirthday = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
         cbGroups = new JComboBox<String>();
         btnOK = new JButton("Ок");
         btnCancel = new JButton("Отмена");
         layout = new GroupLayout(getContentPane());
+        choosedButton = BTN_CLOSE;
+        editOkListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                student = new Student();
+                student.setName(ftfName.getText());
+                student.setSurname(ftfSurname.getText());
+                student.setPatronymic(ftfPatronymic.getText());
+                student.setBirthday(Date.valueOf(ftfBirthday.getText()));
+                student.setGroupID(cbGroups.getSelectedIndex());
+                choosedButton = BTN_OK;
+                setVisible(false);
+            }
+        };
+        editCancelListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                choosedButton = BTN_CANCEL;
+                setVisible(false);
+            }
+        };
+        addOkListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                student = new Student();
+                student.setName(ftfName.getText());
+                student.setSurname(ftfSurname.getText());
+                student.setPatronymic(ftfPatronymic.getText());
+                student.setBirthday(null);
+                student.setGroupID(cbGroups.getSelectedIndex());
+                choosedButton = BTN_OK;
+                setVisible(false);
+            }
+        };
+        addCancelListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                choosedButton = BTN_CANCEL;
+                setVisible(false);
+            }
+        };
 
         setPreferredSize(new Dimension(500, 300));
         setResizable(false);
@@ -97,5 +146,34 @@ public class EditStudentDialog extends JDialog {
                         )
         );
         pack();
+    }
+
+    public int showAddingDialog(String title) {
+        choosedButton = BTN_CLOSE;
+        setTitle(title);
+        btnOK.addActionListener(addOkListener);
+        btnCancel.addActionListener(addCancelListener);
+        setVisible(true);
+
+        return choosedButton;
+    }
+
+    public int showEditingDialog(String title, Student editedStudent) {
+        choosedButton = BTN_CLOSE;
+        setTitle(title);
+        btnOK.addActionListener(editOkListener);
+        btnCancel.addActionListener(editCancelListener);
+        setVisible(true);
+        editedStudent.setName(student.getName());
+        editedStudent.setSurname(student.getSurname());
+        editedStudent.setPatronymic(student.getPatronymic());
+        editedStudent.setBirthday(student.getBirthday());
+        editedStudent.setGroupID(student.getGroupID());
+
+        return choosedButton;
+    }
+
+    public Student getAddingStudent() {
+        return student;
     }
 }

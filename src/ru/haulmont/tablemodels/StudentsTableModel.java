@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class StudentsTableModel extends AbstractTableModel {
     private static final String columnNames[] = {
+            "ID студента",
             "Имя",
             "Фамилия",
             "Отчество",
@@ -30,6 +31,10 @@ public class StudentsTableModel extends AbstractTableModel {
         studentsList = data.getAllStudents();
     }
 
+    public void deleteStudent(Student deletedStudent) {
+        data.deleteStudent(deletedStudent);
+    }
+
     @Override
     public int getRowCount() {
         return studentsList.size();
@@ -38,7 +43,7 @@ public class StudentsTableModel extends AbstractTableModel {
     @Override
     public int getColumnCount() {
         //Magic number is poor
-        return 5;
+        return 6;
     }
 
     @Override
@@ -48,19 +53,23 @@ public class StudentsTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case 0:
-                value = temp.getName();
+                value = temp.getStudentID();
                 break;
             case 1:
-                value = temp.getSurname();
+                value = temp.getName();
                 break;
             case 2:
-                value = temp.getPatronymic();
+                value = temp.getSurname();
                 break;
             case 3:
-                value = temp.getBirthday();
+                value = temp.getPatronymic();
                 break;
             case 4:
+                value = temp.getBirthday();
+                break;
+            case 5:
                 value = temp.getGroupID();
+                break;
         }
 
         return value;

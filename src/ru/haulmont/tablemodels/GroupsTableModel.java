@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class GroupsTableModel extends AbstractTableModel {
     private static final String columnNames[] = {
+            "ID группы",
             "Номер группы",
             "Факультет"
     };
@@ -26,6 +27,10 @@ public class GroupsTableModel extends AbstractTableModel {
     public void updateModel() {
         groupsList = data.getAllGroups();
     }
+    
+    public void deleteGroup(Group deletedGroup) {
+        data.deleteGroup(deletedGroup);
+    }
 
     @Override
     public int getRowCount() {
@@ -35,7 +40,7 @@ public class GroupsTableModel extends AbstractTableModel {
     @Override
     public int getColumnCount() {
         //Magic number is poor
-        return 2;
+        return 3;
     }
 
     @Override
@@ -45,9 +50,12 @@ public class GroupsTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case 0:
-                value = temp.getGroupNumber();
+                value = temp.getGroupID();
                 break;
             case 1:
+                value = temp.getGroupNumber();
+                break;
+            case 2:
                 value = temp.getFaculty();
                 break;
         }

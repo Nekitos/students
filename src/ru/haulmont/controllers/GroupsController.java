@@ -1,5 +1,6 @@
 package ru.haulmont.controllers;
 
+import ru.haulmont.entities.Group;
 import ru.haulmont.tablemodels.GroupsTableModel;
 
 import javax.swing.*;
@@ -15,10 +16,15 @@ public class GroupsController {
     public GroupsController(TableModel model, JTable view) {
         this.model = model;
         this.view = view;
+        view.setModel(model);
     }
 
     public void updateView() {
         ((GroupsTableModel)model).updateModel();
-        view.setModel(model);
+        view.revalidate();
+    }
+
+    public void deleteGroup(Group deletedGroup) {
+        ((GroupsTableModel)model).deleteGroup(deletedGroup);
     }
 }

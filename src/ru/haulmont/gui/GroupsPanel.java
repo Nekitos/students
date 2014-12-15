@@ -2,14 +2,20 @@ package ru.haulmont.gui;
 
 import ru.haulmont.controllers.GroupsController;
 import ru.haulmont.daoclasses.DataSource;
+import ru.haulmont.entities.Group;
 import ru.haulmont.tablemodels.GroupsTableModel;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by nikita on 12/14/14.
  */
 public class GroupsPanel extends JPanel {
+    private static final String QUESTION_MESSAGE_STRING = "Вы действительно хотите удалить выбранную группу?";
+    private static final String QUESTION_MESSAGE_TITLE = "Внимание";
+
     private JTable groupsListTable;
     private JScrollPane tablePane;
     private JButton btnAdd;
@@ -20,9 +26,10 @@ public class GroupsPanel extends JPanel {
     private DataSource data;
     private GroupLayout layout;
 
-    public GroupsPanel(DataSource data) {
+    public GroupsPanel(DataSource data, JFrame owner) {
         this.data = data;
         groupsListTable = new JTable();
+        groupsListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tablePane = new JScrollPane(groupsListTable);
         btnAdd = new JButton("Добавить");
         btnEdit = new JButton("Редактировать");
@@ -32,6 +39,26 @@ public class GroupsPanel extends JPanel {
         layout = new GroupLayout(this);
 
         groupsController.updateView();
+
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = groupsListTable.getSelectedRow();
+                if (selectedRow == -1)
+                    return;
+                int result = JOptionPane.showConfirmDialog( GroupsPanel.this,
+                                                            QUESTION_MESSAGE_STRING,
+                                                            QUESTION_MESSAGE_TITLE,
+                                                            JOptionPane.OK_CANCEL_OPTION,
+                                                            JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.OK_OPTION) {
+                    Group deletedGroup = new Group();
+                    long ID = (Long) groupsListTable.getValueAt(selectedRow, 0);
+                    deletedGroup.setGroupID(ID);
+                    groupsController.deleteGroup(deletedGroup);
+                }
+            }
+        });
 
         setLayout(layout);
         layout.setAutoCreateGaps(true);
