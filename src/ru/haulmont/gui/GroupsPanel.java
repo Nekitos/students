@@ -54,10 +54,11 @@ public class GroupsPanel extends JPanel {
                                                             JOptionPane.OK_CANCEL_OPTION,
                                                             JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.OK_OPTION) {
-                    Group deletedGroup = new Group();
+                    Group deletingGroup = new Group();
                     long ID = (Long) groupsListTable.getValueAt(selectedRow, 0);
-                    deletedGroup.setGroupID(ID);
-                    groupsController.deleteGroup(deletedGroup);
+                    deletingGroup.setGroupID(ID);
+                    groupsController.deleteGroup(deletingGroup);
+                    groupsController.updateView();
                 }
             }
         });
@@ -67,15 +68,15 @@ public class GroupsPanel extends JPanel {
                 int selectedRow = groupsListTable.getSelectedRow();
                 if (selectedRow == -1)
                     return;
-                Group editGroup = new Group();
-                editGroup.setGroupNumber((Integer)groupsListTable.getValueAt(selectedRow, 1));
-                editGroup.setFaculty((String)groupsListTable.getValueAt(selectedRow, 2));
-                int result = editGroupDialog.showEditingDialog("Редактирование группы", editGroup);
+                Group editingGroup = new Group();
+                editingGroup.setGroupID((Long) groupsListTable.getValueAt(selectedRow, 0));
+                editingGroup.setGroupNumber((Integer) groupsListTable.getValueAt(selectedRow, 1));
+                editingGroup.setFaculty((String) groupsListTable.getValueAt(selectedRow, 2));
+                int result = editGroupDialog.showEditingDialog("Редактирование группы", editingGroup);
                 if (result == editGroupDialog.BTN_OK) {
-                    groupsController.editGroup(editGroup);
+                    groupsController.editGroup(editingGroup);
                     groupsController.updateView();
                 }
-                editGroup = null;
             }
         });
         btnAdd.addActionListener(new ActionListener() {

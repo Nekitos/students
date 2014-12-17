@@ -43,7 +43,7 @@ public class EditGroupDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 group = new Group();
-                group.setFaculty(ftfFaculty.getText());
+                group.setFaculty(ftfFaculty.getText().trim());
                 Integer groupNum = Integer.parseInt(ftfGroupNumber.getText().trim());
                 group.setGroupNumber(groupNum);
                 choosedButton = BTN_OK;
@@ -67,8 +67,7 @@ public class EditGroupDialog extends JDialog {
         editOkListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                group = new Group();
-                group.setFaculty(ftfFaculty.getText());
+                group.setFaculty(ftfFaculty.getText().trim());
                 Integer groupNum = Integer.parseInt(ftfGroupNumber.getText().trim());
                 group.setGroupNumber(groupNum);
                 choosedButton = BTN_OK;
@@ -116,6 +115,7 @@ public class EditGroupDialog extends JDialog {
     }
 
     public int showEditingDialog(String title, Group editingGroup) {
+        group = editingGroup;
         choosedButton = BTN_CLOSE;
         ftfGroupNumber.setText(Integer.toString(editingGroup.getGroupNumber()));
         ftfFaculty.setText(editingGroup.getFaculty());
@@ -123,8 +123,6 @@ public class EditGroupDialog extends JDialog {
         btnOK.addActionListener(editOkListener);
         btnCancel.addActionListener(editCancelListener);
         setVisible(true);
-        editingGroup.setFaculty(group.getFaculty());
-        editingGroup.setGroupNumber(group.getGroupNumber());
 
         return choosedButton;
     }

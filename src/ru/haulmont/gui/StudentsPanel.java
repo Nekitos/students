@@ -71,6 +71,15 @@ public class StudentsPanel extends JPanel {
                 }
             }
         });
+        btnEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = studentsListTable.getSelectedRow();
+                if (selectedRow == -1)
+                    return;
+                //TODO write code to add student
+            }
+        });
         btnRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
