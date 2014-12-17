@@ -11,17 +11,17 @@ import javax.swing.table.TableModel;
  */
 public class StudentsController {
     private TableModel studentsTableModel;
-    private JTable studentsTable;
+    private JTable view;
 
-    public StudentsController(TableModel studentsModel, JTable view) {
+    public StudentsController(TableModel studentsModel, JTable studentsTable) {
         studentsTableModel = studentsModel;
-        studentsTable = view;
-        studentsTable.setModel(studentsTableModel);
+        view = studentsTable;
+        view.setModel(studentsTableModel);
     }
 
     public void updateView() {
         ((StudentsTableModel)studentsTableModel).updateModel();
-        studentsTable.revalidate();
+        view.revalidate();
     }
 
     public void deleteStudent(Student deletedStudent) {

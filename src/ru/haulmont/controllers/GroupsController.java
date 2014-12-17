@@ -24,7 +24,15 @@ public class GroupsController {
         view.revalidate();
     }
 
-    public void deleteGroup(Group deletedGroup) {
-        ((GroupsTableModel)model).deleteGroup(deletedGroup);
+    public void addGroup(Group addingGroup) {
+        ((GroupsTableModel)model).addGroup(addingGroup);
+    }
+
+    public void editGroup(Group editingGroup) {
+        ((GroupsTableModel)model).editGroup(editingGroup);
+    }
+
+    public void deleteGroup(Group deletingGroup) {
+        ((GroupsTableModel)model).deleteGroup(deletingGroup);
     }
 }

@@ -25,6 +25,7 @@ public class GroupsPanel extends JPanel {
     private GroupsController groupsController;
     private DataSource data;
     private GroupLayout layout;
+    private EditGroupDialog editGroupDialog;
 
     public GroupsPanel(DataSource data, JFrame owner) {
         this.data = data;
@@ -37,6 +38,7 @@ public class GroupsPanel extends JPanel {
         groupsTableModel = new GroupsTableModel(data);
         groupsController = new GroupsController(groupsTableModel, groupsListTable);
         layout = new GroupLayout(this);
+        editGroupDialog = new EditGroupDialog(owner);
 
         groupsController.updateView();
 
@@ -56,6 +58,33 @@ public class GroupsPanel extends JPanel {
                     long ID = (Long) groupsListTable.getValueAt(selectedRow, 0);
                     deletedGroup.setGroupID(ID);
                     groupsController.deleteGroup(deletedGroup);
+                }
+            }
+        });
+        btnEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = groupsListTable.getSelectedRow();
+                if (selectedRow == -1)
+                    return;
+                Group editGroup = new Group();
+                editGroup.setGroupNumber((Integer)groupsListTable.getValueAt(selectedRow, 1));
+                editGroup.setFaculty((String)groupsListTable.getValueAt(selectedRow, 2));
+                int result = editGroupDialog.showEditingDialog("Редактирование группы", editGroup);
+                if (result == editGroupDialog.BTN_OK) {
+                    groupsController.editGroup(editGroup);
+                    groupsController.updateView();
+                }
+                editGroup = null;
+            }
+        });
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = editGroupDialog.showAddingDialog("Добавление группы");
+                if (result == editGroupDialog.BTN_OK) {
+                    groupsController.addGroup(editGroupDialog.getAddingGroup());
+                    groupsController.updateView();
                 }
             }
         });

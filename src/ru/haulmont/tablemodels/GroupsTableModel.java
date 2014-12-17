@@ -27,9 +27,17 @@ public class GroupsTableModel extends AbstractTableModel {
     public void updateModel() {
         groupsList = data.getAllGroups();
     }
+
+    public void addGroup(Group addingGroup) {
+        data.addGroup(addingGroup);
+    }
     
-    public void deleteGroup(Group deletedGroup) {
-        data.deleteGroup(deletedGroup);
+    public void deleteGroup(Group deletingGroup) {
+        data.deleteGroup(deletingGroup);
+    }
+
+    public void editGroup(Group editingGroup) {
+        data.editGroup(editingGroup);
     }
 
     @Override
