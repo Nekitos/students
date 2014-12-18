@@ -17,15 +17,17 @@ import java.sql.Date;
 public class StudentsPanel extends JPanel {
     private static final String QUESTION_MESSAGE_STRING = "Вы действительно хотите удалить выбранного студента?";
     private static final String QUESTION_MESSAGE_TITLE = "Внимание!";
+    private static final String ERROR_GROUP_NOT_FOUND = "Такой группы не существует!";
 
     private JButton btnAdd;
     private JButton btnEdit;
     private JButton btnRemove;
     private JButton btnSetFilter;
+    private JButton btnResetFilter;
     private JTable studentsListTable;
     private JLabel lblSurname;
     private JLabel lblGroupNum;
-    private JComboBox<String> cbGroupNum;
+    private JFormattedTextField ftfGroupNumber;
     private JTextField tfSurname;
     private JScrollPane tablePane;
     private StudentsController studentsController;
@@ -46,9 +48,10 @@ public class StudentsPanel extends JPanel {
         btnEdit = new JButton("Редактировать");
         btnRemove = new JButton("Удалить");
         btnSetFilter = new JButton("Фильтровать");
+        btnResetFilter = new JButton("Сброс фильтра");
         lblSurname = new JLabel("Фамилия студента");
         lblGroupNum = new JLabel("Номер группы");
-        cbGroupNum = new JComboBox<String>();
+        ftfGroupNumber = new JFormattedTextField();
         tfSurname = new JFormattedTextField();
         filterPanel = new JPanel();
         layout = new GroupLayout(this);
@@ -56,6 +59,7 @@ public class StudentsPanel extends JPanel {
         filterGroup = new TitledBorder("Фильтр");
         editDialog = new EditStudentDialog(owner);
 
+        studentsController.updateModel();
         studentsController.updateView();
 
         btnAdd.addActionListener(new ActionListener() {
@@ -66,11 +70,12 @@ public class StudentsPanel extends JPanel {
                     long result = data.getGroupIDByGroupNumber(newStudent.getGroupNumber());
 
                     if (result == -1) {
-                        JOptionPane.showMessageDialog(StudentsPanel.this, "Такой группы не существует!", "Внимание", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(StudentsPanel.this, ERROR_GROUP_NOT_FOUND, QUESTION_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     newStudent.setGroupID(result);
                     studentsController.addStudent(newStudent);
+                    studentsController.updateModel();
                     studentsController.updateView();
                 }
             }
@@ -93,11 +98,12 @@ public class StudentsPanel extends JPanel {
                     long result = data.getGroupIDByGroupNumber(editingStudent.getGroupNumber());
 
                     if (result == -1) {
-                        JOptionPane.showMessageDialog(StudentsPanel.this, "Такой группы не существует!", "Внимание", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(StudentsPanel.this, ERROR_GROUP_NOT_FOUND, QUESTION_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     editingStudent.setGroupID(result);
                     studentsController.editStudent(editingStudent);
+                    studentsController.updateModel();
                     studentsController.updateView();
                 }
             }
@@ -119,8 +125,29 @@ public class StudentsPanel extends JPanel {
                     long ID = (Long)studentsListTable.getValueAt(selectedRow, 0);
                     deletedStudent.setStudentID(ID);
                     studentsController.deleteStudent(deletedStudent);
+                    studentsController.updateModel();
                     studentsController.updateView();
                 }
+            }
+        });
+        btnSetFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (tfSurname.getText().trim().equals("") || ftfGroupNumber.getText().trim().equals("")) {
+                    JOptionPane.showMessageDialog(StudentsPanel.this, "Поля фильтра или одно из его полей не заданы", "Внимание", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                int groupNumber = Integer.parseInt(ftfGroupNumber.getText().trim());
+                String surname = tfSurname.getText();
+                studentsController.setFilter(surname, groupNumber);
+                studentsController.updateView();
+            }
+        });
+        btnResetFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                studentsController.updateModel();
+                studentsController.updateView();
             }
         });
 
@@ -130,44 +157,51 @@ public class StudentsPanel extends JPanel {
         filterLayout.setAutoCreateContainerGaps(true);
         filterLayout.setHorizontalGroup(filterLayout.createSequentialGroup()
                 .addGroup(filterLayout.createParallelGroup()
-                        .addComponent(lblSurname)
-                        .addComponent(tfSurname)
-                        .addComponent(lblGroupNum)
-                        .addComponent(cbGroupNum)
+                                .addComponent(lblSurname)
+                                .addComponent(tfSurname)
+                                .addComponent(lblGroupNum)
+                                .addComponent(ftfGroupNumber)
                 )
                 .addGap(100)
-                .addComponent(btnSetFilter)
+                .addGroup(filterLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                .addComponent(btnSetFilter)
+                                .addComponent(btnResetFilter)
+                )
         );
         filterLayout.setVerticalGroup(filterLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addGroup(filterLayout.createSequentialGroup()
-                        .addComponent(lblSurname, 20, 20, 20)
-                        .addComponent(tfSurname, 20, 20, 20)
-                        .addComponent(lblGroupNum, 20, 20, 20)
-                        .addComponent(cbGroupNum, 20, 20, 20)
-                )
-                .addComponent(btnSetFilter)
+                        .addGroup(filterLayout.createSequentialGroup()
+                                        .addComponent(lblSurname, 20, 20, 20)
+                                        .addComponent(tfSurname, 20, 20, 20)
+                                        .addComponent(lblGroupNum, 20, 20, 20)
+                                        .addComponent(ftfGroupNumber, 20, 20, 20)
+                        )
+                        .addGroup(filterLayout.createSequentialGroup()
+                                        .addComponent(btnSetFilter)
+                                        .addGap(20)
+                                        .addComponent(btnResetFilter)
+                        )
         );
 
         setLayout(layout);
         layout.setAutoCreateContainerGaps(true);
         layout.setAutoCreateGaps(true);
         layout.setVerticalGroup(layout.createSequentialGroup()
-                        .addComponent(tablePane)
+                .addComponent(tablePane)
                 .addGroup(layout.createParallelGroup()
                                 .addComponent(btnAdd)
                                 .addComponent(btnEdit)
                                 .addComponent(btnRemove)
                 )
-                        .addComponent(filterPanel)
+                .addComponent(filterPanel)
         );
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                        .addComponent(tablePane)
+                .addComponent(tablePane)
                 .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnAdd)
                                 .addComponent(btnEdit)
                                 .addComponent(btnRemove)
                 )
-                        .addComponent(filterPanel)
+                .addComponent(filterPanel)
         );
     }
 

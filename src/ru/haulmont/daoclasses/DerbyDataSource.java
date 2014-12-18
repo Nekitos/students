@@ -262,6 +262,7 @@ public class DerbyDataSource implements DataSource {
                 student.setPatronymic(resultSet.getString(4));
                 student.setBirthday(resultSet.getDate(5));
                 student.setGroupID(resultSet.getLong(6));
+                student.setGroupNumber(resultSet.getInt(7));
                 result.add(student);
             }
         } catch (SQLException e) {

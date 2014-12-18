@@ -18,8 +18,11 @@ public class StudentsController {
         view.setModel(studentsTableModel);
     }
 
-    public void updateView() {
+    public void updateModel() {
         studentsTableModel.updateModel();
+    }
+
+    public void updateView() {
         view.revalidate();
         view.repaint();
     }
@@ -34,5 +37,9 @@ public class StudentsController {
 
     public void deleteStudent(Student deletingStudent) {
         studentsTableModel.deleteStudent(deletingStudent);
+    }
+
+    public void setFilter(String surname, int groupNumber) {
+        studentsTableModel.filter(surname, groupNumber);
     }
 }

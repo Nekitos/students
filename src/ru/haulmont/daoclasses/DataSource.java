@@ -16,7 +16,7 @@ public interface DataSource {
     public static final String REMOVE_STUDENT_QUERY = "DELETE FROM students WHERE id = ?";
     public static final String SELECT_ALL_STUDENTS_QUERY = "SELECT s.*, g.g_number FROM students s INNER JOIN groups g ON g.id = s.group_id";
     public static final String SELECT_ALL_GROUPS_QUERY = "SELECT * FROM groups";
-    public static final String FILTER_STUDENTS_BY_NAME_AND_GROUP_NUMBER = "SELECT s.* FROM students s INNER JOIN groups g ON s.group_id = g.id WHERE s.surname = ? AND g.g_number = ?";
+    public static final String FILTER_STUDENTS_BY_NAME_AND_GROUP_NUMBER = "SELECT s.*, g.g_number FROM students s INNER JOIN groups g ON s.group_id = g.id WHERE s.surname = ? AND g.g_number = ?";
     public static final String GET_GROUP_ID_BY_NUMBER_QUERY = "SELECT id FROM groups WHERE g_number = ?";
 
     /**

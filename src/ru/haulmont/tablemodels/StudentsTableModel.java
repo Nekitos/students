@@ -43,6 +43,10 @@ public class StudentsTableModel extends AbstractTableModel {
         data.deleteStudent(deletedStudent);
     }
 
+    public void filter(String surname, int groupNumber) {
+        studentsList = data.filter(surname, groupNumber);
+    }
+
     @Override
     public int getRowCount() {
         return studentsList.size();
