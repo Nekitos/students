@@ -1,6 +1,6 @@
 package ru.haulmont.gui;
 
-import ru.haulmont.entities.Group;
+import ru.haulmont.daoclasses.entities.Group;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,6 @@
 package ru.haulmont.controllers;
 
-import ru.haulmont.entities.Group;
+import ru.haulmont.daoclasses.entities.Group;
 import ru.haulmont.tablemodels.GroupsTableModel;
 
 import javax.swing.*;

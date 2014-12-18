@@ -1,4 +1,4 @@
-package ru.haulmont.entities;
+package ru.haulmont.daoclasses.entities;
 
 import java.sql.Date;
 
@@ -12,6 +12,7 @@ public class Student {
     private String patronymic;
     private Date birthday;
     private long groupID;
+    private int groupNumber;
 
     public Student() {
 
@@ -63,5 +64,13 @@ public class Student {
 
     public void setGroupID(long groupID) {
         this.groupID = groupID;
+    }
+
+    public int getGroupNumber() {
+        return groupNumber;
+    }
+
+    public void setGroupNumber(int groupNumber) {
+        this.groupNumber = groupNumber;
     }
 }

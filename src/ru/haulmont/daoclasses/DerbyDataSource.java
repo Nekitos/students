@@ -1,7 +1,7 @@
 package ru.haulmont.daoclasses;
 
-import ru.haulmont.entities.Group;
-import ru.haulmont.entities.Student;
+import ru.haulmont.daoclasses.entities.Group;
+import ru.haulmont.daoclasses.entities.Student;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -210,6 +210,28 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
+    public long getGroupIDByGroupNumber(int groupNumber) {
+        long result = -1;
+        try {
+            preparedStatement = conn.prepareStatement(GET_GROUP_ID_BY_NUMBER_QUERY);
+            preparedStatement.setInt(1, groupNumber);
+            ResultSet rslt = preparedStatement.executeQuery();
+            rslt.next();
+            result = rslt.getLong(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    @Override
     public List<Student> getAllStudents() {
         if (studentsUpdate)
             updateStudentsList();
@@ -280,6 +302,7 @@ public class DerbyDataSource implements DataSource {
                 student.setPatronymic(resultSet.getString(4));
                 student.setBirthday(resultSet.getDate(5));
                 student.setGroupID(resultSet.getLong(6));
+                student.setGroupNumber(resultSet.getInt(7));
                 students.add(student);
             }
         } catch (SQLException e) {

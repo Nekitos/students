@@ -1,7 +1,7 @@
 package ru.haulmont.tablemodels;
 
 import ru.haulmont.daoclasses.DataSource;
-import ru.haulmont.entities.Student;
+import ru.haulmont.daoclasses.entities.Student;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -29,6 +29,14 @@ public class StudentsTableModel extends AbstractTableModel {
 
     public void updateModel() {
         studentsList = data.getAllStudents();
+    }
+
+    public void addStudent(Student addingStudent) {
+        data.addStudent(addingStudent);
+    }
+
+    public void editStudent(Student editingStudent) {
+        data.editStudent(editingStudent);
     }
 
     public void deleteStudent(Student deletedStudent) {
@@ -68,7 +76,7 @@ public class StudentsTableModel extends AbstractTableModel {
                 value = temp.getBirthday();
                 break;
             case 5:
-                value = temp.getGroupID();
+                value = temp.getGroupNumber();
                 break;
         }
 

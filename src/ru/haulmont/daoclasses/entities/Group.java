@@ -1,4 +1,4 @@
-package ru.haulmont.entities;
+package ru.haulmont.daoclasses.entities;
 
 /**
  * Created by nikita on 11/29/14.

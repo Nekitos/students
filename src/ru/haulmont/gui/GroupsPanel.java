@@ -2,7 +2,7 @@ package ru.haulmont.gui;
 
 import ru.haulmont.controllers.GroupsController;
 import ru.haulmont.daoclasses.DataSource;
-import ru.haulmont.entities.Group;
+import ru.haulmont.daoclasses.entities.Group;
 import ru.haulmont.tablemodels.GroupsTableModel;
 
 import javax.swing.*;

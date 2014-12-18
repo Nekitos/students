@@ -2,13 +2,14 @@ package ru.haulmont.gui;
 
 import ru.haulmont.controllers.StudentsController;
 import ru.haulmont.daoclasses.DataSource;
-import ru.haulmont.entities.Student;
+import ru.haulmont.daoclasses.entities.Student;
 import ru.haulmont.tablemodels.StudentsTableModel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 
 /**
  * Created by nikita on 12/13/14.
@@ -35,7 +36,7 @@ public class StudentsPanel extends JPanel {
     private JPanel filterPanel;
     private EditStudentDialog editDialog;
 
-    public StudentsPanel(DataSource data, JFrame owner) {
+    public StudentsPanel(final DataSource data, JFrame owner) {
         tableModel = new StudentsTableModel(data);
         studentsListTable = new JTable();
         studentsListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -61,13 +62,16 @@ public class StudentsPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (editDialog.showAddingDialog("Добавление студента") == editDialog.BTN_OK) {
-                    Student temp = editDialog.getAddingStudent();
-                    System.out.println(temp.getStudentID());
-                    System.out.println(temp.getName());
-                    System.out.println(temp.getSurname());
-                    System.out.println(temp.getPatronymic());
-                    System.out.println(temp.getBirthday());
-                    System.out.println(temp.getGroupID());
+                    Student newStudent = editDialog.getAddingStudent();
+                    long result = data.getGroupIDByGroupNumber(newStudent.getGroupNumber());
+
+                    if (result == -1) {
+                        JOptionPane.showMessageDialog(StudentsPanel.this, "Такой группы не существует!", "Внимание", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    newStudent.setGroupID(result);
+                    studentsController.addStudent(newStudent);
+                    studentsController.updateView();
                 }
             }
         });
@@ -77,7 +81,25 @@ public class StudentsPanel extends JPanel {
                 int selectedRow = studentsListTable.getSelectedRow();
                 if (selectedRow == -1)
                     return;
-                //TODO write code to add student
+
+                Student editingStudent = new Student();
+                editingStudent.setStudentID((Long)studentsListTable.getValueAt(selectedRow, 0));
+                editingStudent.setName((String)studentsListTable.getValueAt(selectedRow, 1));
+                editingStudent.setSurname((String)studentsListTable.getValueAt(selectedRow, 2));
+                editingStudent.setPatronymic((String)studentsListTable.getValueAt(selectedRow, 3));
+                editingStudent.setBirthday((Date)studentsListTable.getValueAt(selectedRow, 4));
+                editingStudent.setGroupNumber((Integer)studentsListTable.getValueAt(selectedRow, 5));
+                if (editDialog.showEditingDialog("Редактирование студента", editingStudent) == editDialog.BTN_OK) {
+                    long result = data.getGroupIDByGroupNumber(editingStudent.getGroupNumber());
+
+                    if (result == -1) {
+                        JOptionPane.showMessageDialog(StudentsPanel.this, "Такой группы не существует!", "Внимание", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    editingStudent.setGroupID(result);
+                    studentsController.editStudent(editingStudent);
+                    studentsController.updateView();
+                }
             }
         });
         btnRemove.addActionListener(new ActionListener() {

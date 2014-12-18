@@ -1,13 +1,12 @@
 package ru.haulmont.gui;
 
-import ru.haulmont.entities.Student;
+import ru.haulmont.daoclasses.entities.Student;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by nikita on 12/14/14.
@@ -26,7 +25,7 @@ public class EditStudentDialog extends JDialog {
     private JFormattedTextField ftfSurname;
     private JFormattedTextField ftfPatronymic;
     private JFormattedTextField ftfBirthday;
-    private JComboBox<String> cbGroups;
+    private JFormattedTextField ftfGroups;
     private GroupLayout layout;
     private JButton btnOK;
     private JButton btnCancel;
@@ -47,8 +46,8 @@ public class EditStudentDialog extends JDialog {
         ftfName = new JFormattedTextField();
         ftfSurname = new JFormattedTextField();
         ftfPatronymic = new JFormattedTextField();
-        ftfBirthday = new JFormattedTextField(new SimpleDateFormat("dd.MM.yyyy"));
-        cbGroups = new JComboBox<String>();
+        ftfBirthday = new JFormattedTextField(/*new SimpleDateFormat("dd.MM.yyyy")*/);
+        ftfGroups = new JFormattedTextField();
         btnOK = new JButton("Ок");
         btnCancel = new JButton("Отмена");
         layout = new GroupLayout(getContentPane());
@@ -61,7 +60,7 @@ public class EditStudentDialog extends JDialog {
                 student.setSurname(ftfSurname.getText());
                 student.setPatronymic(ftfPatronymic.getText());
                 student.setBirthday(Date.valueOf(ftfBirthday.getText()));
-                student.setGroupID(cbGroups.getSelectedIndex());
+                student.setGroupNumber(Integer.parseInt(ftfGroups.getText().trim()));
                 choosedButton = BTN_OK;
                 setVisible(false);
             }
@@ -77,11 +76,11 @@ public class EditStudentDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 student = new Student();
-                student.setName(ftfName.getText());
-                student.setSurname(ftfSurname.getText());
-                student.setPatronymic(ftfPatronymic.getText());
-                student.setBirthday(null);
-                student.setGroupID(cbGroups.getSelectedIndex());
+                student.setName(ftfName.getText().trim());
+                student.setSurname(ftfSurname.getText().trim());
+                student.setPatronymic(ftfPatronymic.getText().trim());
+                student.setBirthday(Date.valueOf(ftfBirthday.getText().trim()));
+                student.setGroupNumber(Integer.parseInt(ftfGroups.getText().trim()));
                 choosedButton = BTN_OK;
                 setVisible(false);
             }
@@ -114,7 +113,7 @@ public class EditStudentDialog extends JDialog {
                                         .addComponent(lblBirthday)
                                         .addComponent(ftfBirthday)
                                         .addComponent(lblGroup)
-                                        .addComponent(cbGroups)
+                                        .addComponent(ftfGroups)
                         )
                 )
                 .addGroup(layout.createSequentialGroup()
@@ -136,7 +135,7 @@ public class EditStudentDialog extends JDialog {
                                         .addComponent(lblBirthday, 20, 20, 20)
                                         .addComponent(ftfBirthday, 20, 20, 20)
                                         .addComponent(lblGroup, 20, 20, 20)
-                                        .addComponent(cbGroups, 20, 20, 20)
+                                        .addComponent(ftfGroups, 20, 20, 20)
                                 )
                         )
                         .addGap(20)
@@ -158,17 +157,24 @@ public class EditStudentDialog extends JDialog {
         return choosedButton;
     }
 
-    public int showEditingDialog(String title, Student editedStudent) {
+    public int showEditingDialog(String title, Student editingStudent) {
         choosedButton = BTN_CLOSE;
         setTitle(title);
+        ftfName.setText(editingStudent.getName());
+        ftfSurname.setText(editingStudent.getSurname());
+        ftfPatronymic.setText(editingStudent.getPatronymic());
+        ftfBirthday.setText(editingStudent.getBirthday().toString());
+        ftfGroups.setText(Integer.toString(editingStudent.getGroupNumber()));
         btnOK.addActionListener(editOkListener);
         btnCancel.addActionListener(editCancelListener);
         setVisible(true);
-        editedStudent.setName(student.getName());
-        editedStudent.setSurname(student.getSurname());
-        editedStudent.setPatronymic(student.getPatronymic());
-        editedStudent.setBirthday(student.getBirthday());
-        editedStudent.setGroupID(student.getGroupID());
+        if (choosedButton == BTN_OK) {
+            editingStudent.setName(student.getName());
+            editingStudent.setSurname(student.getSurname());
+            editingStudent.setPatronymic(student.getPatronymic());
+            editingStudent.setBirthday(student.getBirthday());
+            editingStudent.setGroupNumber(student.getGroupNumber());
+        }
 
         return choosedButton;
     }

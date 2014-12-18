@@ -1,7 +1,7 @@
 package ru.haulmont.tablemodels;
 
 import ru.haulmont.daoclasses.DataSource;
-import ru.haulmont.entities.Group;
+import ru.haulmont.daoclasses.entities.Group;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
