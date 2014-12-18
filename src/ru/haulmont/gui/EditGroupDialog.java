@@ -10,7 +10,10 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 
 /**
- * Created by nikita on 12/15/14.
+ * Данный класс предназначен для ввода данных о группе.
+ * В зависимости от операции данное диалоговое окно может служить,
+ * как для добавления группы, так и редактирования уже
+ * существующей группы.
  */
 public class EditGroupDialog extends JDialog {
     public static final int BTN_OK = 0;
@@ -37,6 +40,7 @@ public class EditGroupDialog extends JDialog {
         btnCancel = new JButton("Отмена");
         lblGroupNumber = new JLabel("Номер группы");
         lblFaculty = new JLabel("Факультет");
+        //Формат для ввода группы
         try {
             ftfGroupNumber = new JFormattedTextField(new MaskFormatter("####"));
         } catch (ParseException e) {
@@ -44,6 +48,7 @@ public class EditGroupDialog extends JDialog {
         }
         tfFaculty = new JTextField();
         layout = new GroupLayout(getContentPane());
+        //По умолчанию нажата кнопка закрыть
         choosedButton = BTN_CLOSE;
         addOkListener = new ActionListener() {
             @Override
@@ -110,6 +115,11 @@ public class EditGroupDialog extends JDialog {
         pack();
     }
 
+    /**
+     * Метод отображает диалоговое окно добавления группы
+     * @param title заголовок окна
+     * @return код нажатой кнопки
+     */
     public int showAddingDialog(String title) {
         choosedButton = BTN_CLOSE;
         setTitle(title);
@@ -120,6 +130,12 @@ public class EditGroupDialog extends JDialog {
         return choosedButton;
     }
 
+    /**
+     * Метод отображает диалоговое окно редактирования группы
+     * @param title заголовок окна
+     * @param editingGroup группа подлежащая изменению
+     * @return код нажатой кнопки
+     */
     public int showEditingDialog(String title, Group editingGroup) {
         group = editingGroup;
         choosedButton = BTN_CLOSE;
@@ -133,6 +149,12 @@ public class EditGroupDialog extends JDialog {
         return choosedButton;
     }
 
+    /**
+     * Метод возвращает добавленную группу.
+     * Необходимо вызвать этот метод после того, как данные были введены
+     * и нажата кнопка Ок.
+     * @return ссылку на сущность инкапсулирующую данные о группе
+     */
     public Group getAddingGroup() {
         return group;
     }

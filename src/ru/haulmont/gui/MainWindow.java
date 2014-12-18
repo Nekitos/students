@@ -9,7 +9,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Created by nikita on 12/13/14.
+ * Класс, содержащий вкладки для работы с таблицой студентов
+ * и групп. Основной класс отображающий окно приложения.
  */
 public class MainWindow extends JFrame {
     private JTabbedPane tabsPanel;
@@ -23,6 +24,7 @@ public class MainWindow extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                //Если окно закрывается, закрыть безопасно соединение с базой
                 data.closeConnection();
                 super.windowClosing(e);
             }

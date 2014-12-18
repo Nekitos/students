@@ -5,11 +5,20 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by nikita on 12/18/14.
+ * Простой класс, предназначенный для преобразования даты
+ * из формата дд.мм.гггг в формат понятный типу java.sql.Date
+ * гггг-мм-дд
  */
 public class DateFormat {
+    /**
+     * Метод преобразует формат даты дд.мм.гггг в гггг-мм-дд
+     * @param date строка содержащая дд.мм.гггг
+     * @param format формат даты, используемый в приложении
+     * @return дату понятную для SQL
+     * @throws ParseException
+     */
     public static Date fromString(String date, SimpleDateFormat format) throws ParseException {
         long time = format.parse(date).getTime();
-        return  new Date(time);
+        return new Date(time);
     }
 }

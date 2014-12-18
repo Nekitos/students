@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 public class Main {
 
     public static void main(String[] args) throws InvocationTargetException, InterruptedException {
+        //Поток запуска окна приложения
         EventQueue.invokeAndWait(new Runnable() {
             @Override
             public void run() {

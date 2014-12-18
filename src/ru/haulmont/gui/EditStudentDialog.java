@@ -13,7 +13,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by nikita on 12/14/14.
+ * Данный класс предназначен для ввода данных о студенте.
+ * В зависимости от операции данное диалоговое окно может служить,
+ * как для добавления студента, так и редактирования уже
+ * существующего студента.
  */
 public class EditStudentDialog extends JDialog {
     public static final int BTN_OK = 0;
@@ -169,6 +172,11 @@ public class EditStudentDialog extends JDialog {
         pack();
     }
 
+    /**
+     * Отобразить диалоговое окно добавления студента.
+     * @param title заголовок окна ввода
+     * @return код нажатой кнопки
+     */
     public int showAddingDialog(String title) {
         choosedButton = BTN_CLOSE;
         setTitle(title);
@@ -179,6 +187,12 @@ public class EditStudentDialog extends JDialog {
         return choosedButton;
     }
 
+    /**
+     * Отобразить диалоговое окно редактирования студента.
+     * @param title
+     * @param editingStudent
+     * @return
+     */
     public int showEditingDialog(String title, Student editingStudent) {
         choosedButton = BTN_CLOSE;
         setTitle(title);
@@ -190,6 +204,7 @@ public class EditStudentDialog extends JDialog {
         btnOK.addActionListener(editOkListener);
         btnCancel.addActionListener(editCancelListener);
         setVisible(true);
+        //Если были произведены изменения и нажата кнопка Ок
         if (choosedButton == BTN_OK) {
             editingStudent.setName(student.getName());
             editingStudent.setSurname(student.getSurname());
@@ -201,6 +216,12 @@ public class EditStudentDialog extends JDialog {
         return choosedButton;
     }
 
+    /**
+     * Метод возвращает добавленного студента.
+     * Необходимо вызвать этот метод после того, как
+     * данные были введены и нажата кнопка Ок.
+     * @return возвращает сущность инкапсулирующую данные о студенте.
+     */
     public Student getAddingStudent() {
         return student;
     }

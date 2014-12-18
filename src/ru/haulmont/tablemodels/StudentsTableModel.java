@@ -10,7 +10,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * Created by nikita on 12/13/14.
+ * Модель данных представляющая список студентов
+ * в виде таблицы. Для удобства пользователя, вместо
+ * ID группы в модель введен столбец номер группы.
+ * Используется для отображения на компоненте JTable.
+ * Модель общается с БД запрашивая данные о студентах
+ * и фильтруя по фамилии и группе.
  */
 public class StudentsTableModel extends AbstractTableModel {
     private static final String columnNames[] = {
@@ -25,27 +30,57 @@ public class StudentsTableModel extends AbstractTableModel {
     private List<Student> studentsList;
     private DataSource data;
 
+    /**
+     * Конструирование модели.
+     * @param dataSource ссылка на хранилище данных.
+     */
     public StudentsTableModel(DataSource dataSource) {
         data = dataSource;
         studentsList = data.getAllStudents();
     }
 
+    /**
+     * Метод обновляет модель, получая из базы список всех студентов.
+     */
     public void updateModel() {
         studentsList = data.getAllStudents();
     }
 
+    /**
+     * Добавляет студента обращаясь к интерфейсу DataSource.
+     * @param addingStudent ссылка на сущность, содержащую
+     *                      данные о студенте, подлежащему
+     *                      добавлению.
+     */
     public void addStudent(Student addingStudent) {
         data.addStudent(addingStudent);
     }
 
+    /**
+     * Редактирование студента через интерфейс DataSource.
+     * @param editingStudent ссылка на сущность, содержащую
+     *                       данные о студенте, подлежащему
+     *                       редактированию.
+     */
     public void editStudent(Student editingStudent) {
         data.editStudent(editingStudent);
     }
 
-    public void deleteStudent(Student deletedStudent) {
-        data.deleteStudent(deletedStudent);
+    /**
+     * Удаление студента через интерфейс DataSource.
+     * @param deletingStudent ссылка на сущность,
+     *                        содержащую данные о студенты,
+     *                        подлежащему удалению.
+     */
+    public void deleteStudent(Student deletingStudent) {
+        data.deleteStudent(deletingStudent);
     }
 
+    /**
+     * Фильтр списка студентов по фамилии и номеру группы.
+     * @param surname строка, содержащая фамилию студента
+     * @param groupNumber четырехзначное целое -- номер группы.
+     */
     public void filter(String surname, int groupNumber) {
         studentsList = data.filter(surname, groupNumber);
     }

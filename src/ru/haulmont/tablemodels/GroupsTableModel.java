@@ -7,7 +7,9 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 /**
- * Created by nikita on 12/13/14.
+ * Модель содержащая в себе таблицу групп студентов.
+ * Использутеся для отображения на компоненте JTable.
+ * Модель общается с БД запрашивая данные о группах.
  */
 public class GroupsTableModel extends AbstractTableModel {
     private static final String columnNames[] = {
@@ -19,23 +21,42 @@ public class GroupsTableModel extends AbstractTableModel {
     private DataSource data;
     private List<Group> groupsList;
 
+    /**
+     * Конструирование модели.
+     * @param dataSource ссылка на хранилище данных
+     */
     public GroupsTableModel(DataSource dataSource) {
         data = dataSource;
         groupsList = data.getAllGroups();
     }
 
+    /**
+     * Метод обновляет данные в модели.
+     */
     public void updateModel() {
         groupsList = data.getAllGroups();
     }
 
+    /**
+     * Добавление группы в базу через интерфейс DataSource.
+     * @param addingGroup ссылка на сущность, инкапсулирующую данные о группе.
+     */
     public void addGroup(Group addingGroup) {
         data.addGroup(addingGroup);
     }
-    
+
+    /**
+     * Удаление группы из базы через интерфейс DataSource.
+     * @param deletingGroup ссылка на сущность, инкапсулирующую данные о группе, подлежащая удалению.
+     */
     public void deleteGroup(Group deletingGroup) {
         data.deleteGroup(deletingGroup);
     }
 
+    /**
+     * Редактирование группы через интерфейс DataSource.
+     * @param editingGroup ссылка на сущность, инкапсулирующую данные о группе, подлежащая редактированию
+     */
     public void editGroup(Group editingGroup) {
         data.editGroup(editingGroup);
     }
