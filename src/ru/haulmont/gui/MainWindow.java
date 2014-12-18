@@ -1,7 +1,7 @@
 package ru.haulmont.gui;
 
 import ru.haulmont.daoclasses.DataSource;
-import ru.haulmont.daoclasses.DerbyDataSource;
+import ru.haulmont.factory.DataSourceFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +19,7 @@ public class MainWindow extends JFrame {
 
 
     public MainWindow() {
-        data = new DerbyDataSource();
-        data.loadDatabase("jdbc:derby:../resources/studdb;create=true", null, null);
+        data = DataSourceFactory.newDataSource(DataSourceFactory.DERBY_DATA_SOURCE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
