@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by nikita on 11/29/14.
+ * Класс DerbyDataSource предназначен для загрузки встроенной
+ * БД Apache Derby< поставляемой вместе с JDK.
  */
 public class DerbyDataSource implements DataSource {
     private Connection conn;
@@ -25,10 +26,30 @@ public class DerbyDataSource implements DataSource {
         groups = new ArrayList<Group>();
     }
 
+    /**
+     * Загружает БД Apache Derby (Embedded). Поскольку для встроенной БД
+     * не является обходимым пароль и имя пользователя, то передается null.
+     * Если БД не существовала или ее кто-то удалил, то она создается
+     * с нуля.
+     * @param url  строка содержащая драйвер БД, имя БД и расположение;
+     * @param userName  null;
+     * @param password  null.
+     */
     @Override
     public void loadDatabase(String url, String userName, String password) {
         try {
             conn = DriverManager.getConnection(url);
+            DatabaseMetaData dbMeta = conn.getMetaData();
+            ResultSet resultSet = dbMeta.getTables(null, "APP", "STUDENTS", null);
+            if (!resultSet.next()) {
+                Statement statement = conn.createStatement();
+                statement.execute(CREATE_STUD_TABLE);
+            }
+            resultSet = dbMeta.getTables(null, "APP", "GROUPS", null);
+            if (!resultSet.next()) {
+                Statement statement = conn.createStatement();
+                statement.execute(CREATE_GROUPS_TABLE);
+            }
             conn.setAutoCommit(false);
             groupsUpdate = false;
             studentsUpdate = false;
@@ -40,12 +61,12 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
-    public void addGroup(Group newGroup) {
+    public void addGroup(Group addingGroup) {
         try {
             savepoint = conn.setSavepoint();
             preparedStatement = conn.prepareStatement(ADD_GROUP_QUERY);
-            preparedStatement.setInt(1, newGroup.getGroupNumber());
-            preparedStatement.setString(2, newGroup.getFaculty());
+            preparedStatement.setInt(1, addingGroup.getGroupNumber());
+            preparedStatement.setString(2, addingGroup.getFaculty());
             preparedStatement.executeUpdate();
             groupsUpdate = true;
         } catch (SQLException e) {
@@ -67,13 +88,13 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
-    public void editGroup(Group editedGroup) {
+    public void editGroup(Group editingGroup) {
         try {
             savepoint = conn.setSavepoint();
             preparedStatement = conn.prepareStatement(EDIT_GROUP_QUERY);
-            preparedStatement.setInt(1, editedGroup.getGroupNumber());
-            preparedStatement.setString(2, editedGroup.getFaculty());
-            preparedStatement.setLong(3, editedGroup.getGroupID());
+            preparedStatement.setInt(1, editingGroup.getGroupNumber());
+            preparedStatement.setString(2, editingGroup.getFaculty());
+            preparedStatement.setLong(3, editingGroup.getGroupID());
             preparedStatement.executeUpdate();
             groupsUpdate = true;
         } catch (SQLException e) {
@@ -95,11 +116,11 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
-    public void deleteGroup(Group removedGroup) {
+    public void deleteGroup(Group deletingGroup) {
         try {
             savepoint = conn.setSavepoint();
             preparedStatement = conn.prepareStatement(REMOVE_GROUP_QUERY);
-            preparedStatement.setLong(1, removedGroup.getGroupID());
+            preparedStatement.setLong(1, deletingGroup.getGroupID());
             preparedStatement.executeUpdate();
             groupsUpdate = true;
         } catch (SQLException e) {
@@ -122,15 +143,15 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
-    public void addStudent(Student newStudent) {
+    public void addStudent(Student addingStudent) {
         try {
             savepoint = conn.setSavepoint();
             preparedStatement = conn.prepareStatement(ADD_STUDENT_QUERY);
-            preparedStatement.setString(1, newStudent.getName());
-            preparedStatement.setString(2, newStudent.getSurname());
-            preparedStatement.setString(3, newStudent.getPatronymic());
-            preparedStatement.setDate(4, newStudent.getBirthday());
-            preparedStatement.setLong(5, newStudent.getGroupID());
+            preparedStatement.setString(1, addingStudent.getName());
+            preparedStatement.setString(2, addingStudent.getSurname());
+            preparedStatement.setString(3, addingStudent.getPatronymic());
+            preparedStatement.setDate(4, addingStudent.getBirthday());
+            preparedStatement.setLong(5, addingStudent.getGroupID());
             preparedStatement.executeUpdate();
             studentsUpdate = true;
         } catch (SQLException e) {
@@ -152,16 +173,16 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
-    public void editStudent(Student editedStudent) {
+    public void editStudent(Student editingStudent) {
         try {
             savepoint = conn.setSavepoint();
             preparedStatement = conn.prepareStatement(EDIT_STUDENT_QUERY);
-            preparedStatement.setString(1, editedStudent.getName());
-            preparedStatement.setString(2, editedStudent.getSurname());
-            preparedStatement.setString(3, editedStudent.getPatronymic());
-            preparedStatement.setDate(4, editedStudent.getBirthday());
-            preparedStatement.setLong(5, editedStudent.getGroupID());
-            preparedStatement.setLong(6, editedStudent.getStudentID());
+            preparedStatement.setString(1, editingStudent.getName());
+            preparedStatement.setString(2, editingStudent.getSurname());
+            preparedStatement.setString(3, editingStudent.getPatronymic());
+            preparedStatement.setDate(4, editingStudent.getBirthday());
+            preparedStatement.setLong(5, editingStudent.getGroupID());
+            preparedStatement.setLong(6, editingStudent.getStudentID());
             preparedStatement.executeUpdate();
             studentsUpdate = true;
         } catch (SQLException e) {
@@ -183,11 +204,11 @@ public class DerbyDataSource implements DataSource {
     }
 
     @Override
-    public void deleteStudent(Student removedStudent) {
+    public void deleteStudent(Student deletingStudent) {
         try {
             savepoint = conn.setSavepoint();
             preparedStatement = conn.prepareStatement(REMOVE_STUDENT_QUERY);
-            preparedStatement.setLong(1, removedStudent.getStudentID());
+            preparedStatement.setLong(1, deletingStudent.getStudentID());
             preparedStatement.executeUpdate();
             studentsUpdate = true;
         } catch (SQLException e) {

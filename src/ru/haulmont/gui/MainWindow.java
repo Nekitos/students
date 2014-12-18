@@ -1,6 +1,7 @@
 package ru.haulmont.gui;
 
 import ru.haulmont.daoclasses.DataSource;
+import ru.haulmont.daoclasses.DerbyDataSource;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,14 +15,16 @@ public class MainWindow extends JFrame {
     private JTabbedPane tabsPanel;
     private StudentsPanel studentsPanel;
     private GroupsPanel groupsPanel;
-    private final DataSource data;
+    private DataSource data;
 
-    public MainWindow(DataSource data) {
-        this.data = data;
+
+    public MainWindow() {
+        data = new DerbyDataSource();
+        data.loadDatabase("jdbc:derby:../resources/studdb;create=true", null, null);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                MainWindow.this.data.closeConnection();
+                data.closeConnection();
                 super.windowClosing(e);
             }
         });

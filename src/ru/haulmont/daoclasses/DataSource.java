@@ -8,6 +8,18 @@ import java.util.List;
  * Created by nikita on 11/29/14.
  */
 public interface DataSource {
+    public static final String CREATE_STUD_TABLE =  "CREATE TABLE students ( " +
+                                                    "id BIGINT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), " +
+                                                    "name VARCHAR(60) NOT NULL, " +
+                                                    "surname VARCHAR(60) NOT NULL, " +
+                                                    "patronymic VARCHAR(60) NOT NULL, " +
+                                                    "birthday DATE NOT NULL, " +
+                                                    "group_id BIGINT NOT NULL CONSTRAINT GROUP_FK REFERENCES groups (id))";
+    public static final String CREATE_GROUPS_TABLE =    "CREATE TABLE groups ( " +
+                                                        "id BIGINT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1), " +
+                                                        "g_number INT UNIQUE, " +
+                                                        "faculty VARCHAR(60) NOT NULL)";
+
     public static final String ADD_GROUP_QUERY = "INSERT INTO groups (g_number, faculty) VALUES (?, ?)";
     public static final String ADD_STUDENT_QUERY = "INSERT INTO students (name, surname, patronymic, birthday, group_id) VALUES (?, ?, ?, ?, ?)";
     public static final String EDIT_GROUP_QUERY = "UPDATE groups SET g_number = ?, faculty = ? WHERE id = ?";
