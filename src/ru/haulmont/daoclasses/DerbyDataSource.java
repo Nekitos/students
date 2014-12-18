@@ -40,15 +40,15 @@ public class DerbyDataSource implements DataSource {
         try {
             conn = DriverManager.getConnection(url);
             DatabaseMetaData dbMeta = conn.getMetaData();
-            ResultSet resultSet = dbMeta.getTables(null, "APP", "STUDENTS", null);
-            if (!resultSet.next()) {
-                Statement statement = conn.createStatement();
-                statement.execute(CREATE_STUD_TABLE);
-            }
-            resultSet = dbMeta.getTables(null, "APP", "GROUPS", null);
+            ResultSet resultSet = dbMeta.getTables(null, "APP", "GROUPS", null);
             if (!resultSet.next()) {
                 Statement statement = conn.createStatement();
                 statement.execute(CREATE_GROUPS_TABLE);
+            }
+            resultSet = dbMeta.getTables(null, "APP", "STUDENTS", null);
+            if (!resultSet.next()) {
+                Statement statement = conn.createStatement();
+                statement.execute(CREATE_STUD_TABLE);
             }
             conn.setAutoCommit(false);
             groupsUpdate = false;
