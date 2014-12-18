@@ -3,6 +3,7 @@ package ru.haulmont.daoclasses;
 import ru.haulmont.daoclasses.entities.Group;
 import ru.haulmont.daoclasses.entities.Student;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,6 @@ public class DerbyDataSource implements DataSource {
             preparedStatement = conn.prepareStatement(ADD_GROUP_QUERY);
             preparedStatement.setInt(1, newGroup.getGroupNumber());
             preparedStatement.setString(2, newGroup.getFaculty());
-            //TODO Write code where throw exception if group not added.
             preparedStatement.executeUpdate();
             groupsUpdate = true;
         } catch (SQLException e) {
@@ -109,6 +109,7 @@ public class DerbyDataSource implements DataSource {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+            JOptionPane.showMessageDialog(null, "Невозможно удалить группу содержащую студентов", "Ошибка", JOptionPane.ERROR_MESSAGE);
         } finally {
             try {
                 conn.releaseSavepoint(savepoint);
@@ -130,7 +131,6 @@ public class DerbyDataSource implements DataSource {
             preparedStatement.setString(3, newStudent.getPatronymic());
             preparedStatement.setDate(4, newStudent.getBirthday());
             preparedStatement.setLong(5, newStudent.getGroupID());
-            //TODO Write code where throw exception if group not added.
             preparedStatement.executeUpdate();
             studentsUpdate = true;
         } catch (SQLException e) {
@@ -162,7 +162,6 @@ public class DerbyDataSource implements DataSource {
             preparedStatement.setDate(4, editedStudent.getBirthday());
             preparedStatement.setLong(5, editedStudent.getGroupID());
             preparedStatement.setLong(6, editedStudent.getStudentID());
-            //TODO Write code where throw exception if student not added.
             preparedStatement.executeUpdate();
             studentsUpdate = true;
         } catch (SQLException e) {
@@ -286,7 +285,6 @@ public class DerbyDataSource implements DataSource {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Connection successfully closed.");
     }
 
     private void updateStudentsList() {

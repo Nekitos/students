@@ -16,7 +16,7 @@ public class Main {
             public void run() {
                 //Перенести создание экземпляра БД в класс MainWindow
                 DataSource data = new DerbyDataSource();
-                data.loadDatabase("jdbc:derby:studdb;create=true", null, null);
+                data.loadDatabase("jdbc:derby:resources/studdb;create=true", null, null);
                 JFrame frame = new MainWindow(data);
                 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.setVisible(true);

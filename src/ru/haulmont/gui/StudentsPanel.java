@@ -4,12 +4,16 @@ import ru.haulmont.controllers.StudentsController;
 import ru.haulmont.daoclasses.DataSource;
 import ru.haulmont.daoclasses.entities.Student;
 import ru.haulmont.tablemodels.StudentsTableModel;
+import ru.haulmont.util.DateFormat;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.MaskFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by nikita on 12/13/14.
@@ -18,6 +22,8 @@ public class StudentsPanel extends JPanel {
     private static final String QUESTION_MESSAGE_STRING = "Вы действительно хотите удалить выбранного студента?";
     private static final String QUESTION_MESSAGE_TITLE = "Внимание!";
     private static final String ERROR_GROUP_NOT_FOUND = "Такой группы не существует!";
+    private static final String FILTER_ERROR_TITLE = "Внимание!";
+    private static final String FILTER_ERROR_STRING = "Поля фильтра или одно из его полей не заданы";
 
     private JButton btnAdd;
     private JButton btnEdit;
@@ -37,6 +43,7 @@ public class StudentsPanel extends JPanel {
     private TitledBorder filterGroup;
     private JPanel filterPanel;
     private EditStudentDialog editDialog;
+    private SimpleDateFormat simpleDateFormat;
 
     public StudentsPanel(final DataSource data, JFrame owner) {
         tableModel = new StudentsTableModel(data);
@@ -51,8 +58,13 @@ public class StudentsPanel extends JPanel {
         btnResetFilter = new JButton("Сброс фильтра");
         lblSurname = new JLabel("Фамилия студента");
         lblGroupNum = new JLabel("Номер группы");
-        ftfGroupNumber = new JFormattedTextField();
-        tfSurname = new JFormattedTextField();
+        simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            ftfGroupNumber = new JFormattedTextField(new MaskFormatter("####"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        tfSurname = new JTextField();
         filterPanel = new JPanel();
         layout = new GroupLayout(this);
         filterLayout = new GroupLayout(filterPanel);
@@ -92,13 +104,22 @@ public class StudentsPanel extends JPanel {
                 editingStudent.setName((String)studentsListTable.getValueAt(selectedRow, 1));
                 editingStudent.setSurname((String)studentsListTable.getValueAt(selectedRow, 2));
                 editingStudent.setPatronymic((String)studentsListTable.getValueAt(selectedRow, 3));
-                editingStudent.setBirthday((Date)studentsListTable.getValueAt(selectedRow, 4));
+                Date date = null;
+                try {
+                    date = DateFormat.fromString((String)studentsListTable.getValueAt(selectedRow, 4), simpleDateFormat);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                editingStudent.setBirthday(date);
                 editingStudent.setGroupNumber((Integer)studentsListTable.getValueAt(selectedRow, 5));
                 if (editDialog.showEditingDialog("Редактирование студента", editingStudent) == editDialog.BTN_OK) {
                     long result = data.getGroupIDByGroupNumber(editingStudent.getGroupNumber());
 
                     if (result == -1) {
-                        JOptionPane.showMessageDialog(StudentsPanel.this, ERROR_GROUP_NOT_FOUND, QUESTION_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(  StudentsPanel.this,
+                                                        ERROR_GROUP_NOT_FOUND,
+                                                        QUESTION_MESSAGE_TITLE,
+                                                        JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     editingStudent.setGroupID(result);
@@ -116,8 +137,8 @@ public class StudentsPanel extends JPanel {
                     return;
 
                 int result = JOptionPane.showConfirmDialog( StudentsPanel.this,
-                                                            QUESTION_MESSAGE_TITLE,
                                                             QUESTION_MESSAGE_STRING,
+                                                            QUESTION_MESSAGE_TITLE,
                                                             JOptionPane.OK_CANCEL_OPTION,
                                                             JOptionPane.QUESTION_MESSAGE);
                 if(result == JOptionPane.OK_OPTION) {
@@ -134,7 +155,7 @@ public class StudentsPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (tfSurname.getText().trim().equals("") || ftfGroupNumber.getText().trim().equals("")) {
-                    JOptionPane.showMessageDialog(StudentsPanel.this, "Поля фильтра или одно из его полей не заданы", "Внимание", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(StudentsPanel.this, FILTER_ERROR_STRING, FILTER_ERROR_TITLE, JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 int groupNumber = Integer.parseInt(ftfGroupNumber.getText().trim());

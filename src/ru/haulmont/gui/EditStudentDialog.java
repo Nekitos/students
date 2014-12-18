@@ -1,12 +1,16 @@
 package ru.haulmont.gui;
 
 import ru.haulmont.daoclasses.entities.Student;
+import ru.haulmont.util.DateFormat;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by nikita on 12/14/14.
@@ -35,6 +39,7 @@ public class EditStudentDialog extends JDialog {
     private ActionListener editCancelListener;
     private ActionListener addOkListener;
     private ActionListener addCancelListener;
+    private SimpleDateFormat simpleDateFormat;
 
     public EditStudentDialog(JFrame owner) {
         super(owner, true);
@@ -46,8 +51,13 @@ public class EditStudentDialog extends JDialog {
         ftfName = new JFormattedTextField();
         ftfSurname = new JFormattedTextField();
         ftfPatronymic = new JFormattedTextField();
-        ftfBirthday = new JFormattedTextField(/*new SimpleDateFormat("dd.MM.yyyy")*/);
-        ftfGroups = new JFormattedTextField();
+        simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            ftfBirthday = new JFormattedTextField(new MaskFormatter("##.##.####"));
+            ftfGroups = new JFormattedTextField(new MaskFormatter("####"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         btnOK = new JButton("Ок");
         btnCancel = new JButton("Отмена");
         layout = new GroupLayout(getContentPane());
@@ -59,7 +69,13 @@ public class EditStudentDialog extends JDialog {
                 student.setName(ftfName.getText());
                 student.setSurname(ftfSurname.getText());
                 student.setPatronymic(ftfPatronymic.getText());
-                student.setBirthday(Date.valueOf(ftfBirthday.getText()));
+                Date date = null;
+                try {
+                    date = DateFormat.fromString(ftfBirthday.getText().trim(), simpleDateFormat);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                student.setBirthday(date);
                 student.setGroupNumber(Integer.parseInt(ftfGroups.getText().trim()));
                 choosedButton = BTN_OK;
                 setVisible(false);
@@ -79,7 +95,13 @@ public class EditStudentDialog extends JDialog {
                 student.setName(ftfName.getText().trim());
                 student.setSurname(ftfSurname.getText().trim());
                 student.setPatronymic(ftfPatronymic.getText().trim());
-                student.setBirthday(Date.valueOf(ftfBirthday.getText().trim()));
+                Date date = null;
+                try {
+                    date = DateFormat.fromString(ftfBirthday.getText().trim(), simpleDateFormat);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                student.setBirthday(date);
                 student.setGroupNumber(Integer.parseInt(ftfGroups.getText().trim()));
                 choosedButton = BTN_OK;
                 setVisible(false);
@@ -163,7 +185,7 @@ public class EditStudentDialog extends JDialog {
         ftfName.setText(editingStudent.getName());
         ftfSurname.setText(editingStudent.getSurname());
         ftfPatronymic.setText(editingStudent.getPatronymic());
-        ftfBirthday.setText(editingStudent.getBirthday().toString());
+        ftfBirthday.setText(simpleDateFormat.format(editingStudent.getBirthday()));
         ftfGroups.setText(Integer.toString(editingStudent.getGroupNumber()));
         btnOK.addActionListener(editOkListener);
         btnCancel.addActionListener(editCancelListener);

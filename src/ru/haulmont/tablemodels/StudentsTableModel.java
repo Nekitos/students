@@ -4,6 +4,9 @@ import ru.haulmont.daoclasses.DataSource;
 import ru.haulmont.daoclasses.entities.Student;
 
 import javax.swing.table.AbstractTableModel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -77,7 +80,8 @@ public class StudentsTableModel extends AbstractTableModel {
                 value = temp.getPatronymic();
                 break;
             case 4:
-                value = temp.getBirthday();
+                String date = new SimpleDateFormat("dd.MM.yyyy").format(temp.getBirthday());
+                value = date;
                 break;
             case 5:
                 value = temp.getGroupNumber();

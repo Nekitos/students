@@ -3,9 +3,11 @@ package ru.haulmont.gui;
 import ru.haulmont.daoclasses.entities.Group;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 
 /**
  * Created by nikita on 12/15/14.
@@ -21,7 +23,7 @@ public class EditGroupDialog extends JDialog {
     private JLabel lblGroupNumber;
     private JLabel lblFaculty;
     private JFormattedTextField ftfGroupNumber;
-    private JFormattedTextField ftfFaculty;
+    private JTextField tfFaculty;
     private int choosedButton;
     private Group group;
     private ActionListener addOkListener;
@@ -35,15 +37,19 @@ public class EditGroupDialog extends JDialog {
         btnCancel = new JButton("Отмена");
         lblGroupNumber = new JLabel("Номер группы");
         lblFaculty = new JLabel("Факультет");
-        ftfGroupNumber = new JFormattedTextField();
-        ftfFaculty = new JFormattedTextField();
+        try {
+            ftfGroupNumber = new JFormattedTextField(new MaskFormatter("####"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        tfFaculty = new JTextField();
         layout = new GroupLayout(getContentPane());
         choosedButton = BTN_CLOSE;
         addOkListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 group = new Group();
-                group.setFaculty(ftfFaculty.getText().trim());
+                group.setFaculty(tfFaculty.getText().trim());
                 Integer groupNum = Integer.parseInt(ftfGroupNumber.getText().trim());
                 group.setGroupNumber(groupNum);
                 choosedButton = BTN_OK;
@@ -67,7 +73,7 @@ public class EditGroupDialog extends JDialog {
         editOkListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                group.setFaculty(ftfFaculty.getText().trim());
+                group.setFaculty(tfFaculty.getText().trim());
                 Integer groupNum = Integer.parseInt(ftfGroupNumber.getText().trim());
                 group.setGroupNumber(groupNum);
                 choosedButton = BTN_OK;
@@ -84,7 +90,7 @@ public class EditGroupDialog extends JDialog {
                 .addComponent(lblGroupNumber)
                 .addComponent(ftfGroupNumber)
                 .addComponent(lblFaculty)
-                .addComponent(ftfFaculty)
+                .addComponent(tfFaculty)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(btnOK)
                         .addComponent(btnCancel)
@@ -94,7 +100,7 @@ public class EditGroupDialog extends JDialog {
                 .addComponent(lblGroupNumber, 20, 20, 20)
                 .addComponent(ftfGroupNumber, 20, 20, 20)
                 .addComponent(lblFaculty, 20, 20, 20)
-                .addComponent(ftfFaculty, 20, 20, 20)
+                .addComponent(tfFaculty, 20, 20, 20)
                 .addGap(50)
                 .addGroup(layout.createParallelGroup()
                         .addComponent(btnOK)
@@ -118,7 +124,7 @@ public class EditGroupDialog extends JDialog {
         group = editingGroup;
         choosedButton = BTN_CLOSE;
         ftfGroupNumber.setText(Integer.toString(editingGroup.getGroupNumber()));
-        ftfFaculty.setText(editingGroup.getFaculty());
+        tfFaculty.setText(editingGroup.getFaculty());
         setTitle(title);
         btnOK.addActionListener(editOkListener);
         btnCancel.addActionListener(editCancelListener);
